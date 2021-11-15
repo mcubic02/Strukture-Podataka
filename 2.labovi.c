@@ -36,28 +36,28 @@ int main(int argc, char**argv) {
 	do
 	{
 		printf("Odaberite radnju: 1-dodavanje na pocetak, 2-ispis liste, 3-dodavanje na kraj liste, 4-pronalazak po prezimenu, 5-brisanje elementa, 0-izlaz");
-		scanf_s("%d", &input);
+		scanf("%d", &input);
 			if (input == 1) {
 				printf("Upisi novu osobu :\n");
-				printf("Name:");scanf_s(" %s", name,sizeof(name));
-				printf("Surname:");scanf_s(" %s", surname, sizeof(surname));
-				printf("Birth year:");scanf_s("%d", &birthYear);
+				printf("Name:");scanf(" %s", name);
+				printf("Surname:");scanf(" %s", surname);
+				printf("Birth year:");scanf("%d", &birthYear);
 				PrependList(p, name, surname, birthYear);
 			}
 			else if (input == 2)PrintList(p->next);
 			else if (input == 3) 
 			{
 				printf("Upisi novu osobu :\n");
-				printf("Name:");scanf_s(" %s", &name,sizeof(name));
-				printf("Surname:");scanf_s(" %s", &surname,sizeof(surname));
-				printf("Birth year:");scanf_s("%d", &birthYear);
+				printf("Name:");scanf(" %s", &name);
+				printf("Surname:");scanf(" %s", &surname);
+				printf("Birth year:");scanf("%d", &birthYear);
 				AppendList(p->next, name, surname, birthYear);
 
 
 			}
 			else if (input == 4) {
 				printf("Upisi prezime koje zelis pronaci:");
-				scanf_s(" %s", &surname,sizeof(surname));
+				scanf(" %s", &surname);
 				Search = FindBySurname(p, surname);
 				if (Search)printf(" %s %s %d", name, surname, birthYear);
 				else printf("Nema trazengo prezimena");
@@ -65,7 +65,7 @@ int main(int argc, char**argv) {
 			else
 			{
 				printf("Upisi prezime osobe koju zelis izbrisati:");
-				scanf_s(" %s", &surname,sizeof(surname));
+				scanf(" %s", &surname);
 				Delete(p, surname);
 			}
 
@@ -91,8 +91,8 @@ Position CreatePerson(char* name, char* surname, int birthYear)
 		perror("Can't allocate memory!");
 		return NULL;
 	}
-	strcpy_s(newPerson->name,sizeof(newPerson->name), name);
-	strcpy_s(newPerson->surname, sizeof(newPerson->surname), surname);
+	strcpy(newPerson->name, name);
+	strcpy(newPerson->surname, surname);
 	newPerson->birthYear = birthYear;
 	return newPerson;
 }
