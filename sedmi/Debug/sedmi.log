@@ -1,0 +1,5 @@
+﻿  main.c
+C:\Users\Marija\source\repos\sedmi\sedmi\main.c(36,20): warning C4013: 'MoveTo' undefined; assuming extern returning int
+C:\Users\Marija\source\repos\sedmi\sedmi\main.c(36,45): warning C4047: '=': 'Position' differs in levels of indirection from 'int'
+C:\Users\Marija\source\repos\sedmi\sedmi\main.c(47,20): warning C4013: 'PrintDirectories' undefined; assuming extern returning int
+  sedmi.vcxproj -> C:\Users\Marija\source\repos\sedmi\Debug\sedmi.exe
