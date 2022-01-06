@@ -1,0 +1,4 @@
+﻿  mainA.c
+C:\Users\Marija\source\repos\desetiiA\desetiiA\mainA.c(16,27): warning C4047: 'function': 'char' differs in levels of indirection from 'char [32]'
+C:\Users\Marija\source\repos\desetiiA\desetiiA\mainA.c(16,19): warning C4024: 'ReadListFromFile': different types for formal and actual parameter 1
+  desetiiA.vcxproj -> C:\Users\Marija\source\repos\desetiiA\Debug\desetiiA.exe
