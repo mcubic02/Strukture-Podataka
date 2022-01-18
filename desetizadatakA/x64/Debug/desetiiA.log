@@ -1,0 +1,3 @@
+﻿  desetiiA.c
+C:\Users\Marija\Desktop\strukture\My git\Strukture-Podataka\desetiiA\desetiiA.c(105,12): warning C4013: 'PrintTree' undefined; assuming extern returning int
+  desetiiA.vcxproj -> C:\Users\Marija\Desktop\strukture\My git\Strukture-Podataka\desetiiA\x64\Debug\desetiiA.exe
