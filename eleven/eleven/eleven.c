@@ -5,13 +5,43 @@
 #include<string.h>
 #define _CRT_SECURE_NO_WARNINGS
 
-int ReadFromFiles(char* file, hashP H)
+hashP Table(int tabSize)
 {
-	char buffer[MAX_SIZE], State[MAX_SIZE], CityFile[MAX_SIZE];
+	
+	hashP H = NULL;
+	int i = 0;
+
+	H = (hashP)malloc(sizeof(hashT));
+
+	if (H == NULL) {
+		perror("Couldn't allocate!");
+		return NULL;
+	}
+	H->tabSize = tabSize;
+	
+	H->hashList = (List*)malloc(sizeof(List) * H->tabSize);
+	if (H->hashList == NULL)
+	{
+		perror("Couldn't allocate!");
+		return -1;
+	}
+
+	for (i = 0;i < H->tabSize;i++)
+		H->hashList[i] = NULL;
+	
+	return H;
+}
+
+int ReadFile(char* file, hashP H)
+{
+
+	char buffer[MAX_SIZE], State[MAX_SIZE], CityFile[MAX_SIZE] = {0};
 	FILE* dat = NULL;
 	int result = 0;
 
 	dat = fopen(file, "r");
+	int i = 0;
+
 	if (!dat)
 	{
 		perror("Can't open file");
@@ -19,8 +49,9 @@ int ReadFromFiles(char* file, hashP H)
 	}
 	while (!feof(dat))
 	{
+		printf("\nU while %d. put", i + 1);
+		i++;
 		fscanf(dat, "%s %s", State, CityFile);
-
 		InsertToHash(H, State, CityFile);
 	}
 	fclose(dat);
@@ -29,61 +60,39 @@ int ReadFromFiles(char* file, hashP H)
 int InsertToHash(hashP H, char* State, char* CityFile)
 {
 	Position newEl = NULL;
-	ListH L = NULL;
-	int hashKey = Find(State, H->tabSize);
-
+	ListH H1 = NULL;
+	int tabSize = H->tabSize;
+		int hashKey = Find(State, H->tabSize);
 	newEl = CreateListElement(State);
 	if (newEl == NULL)
 		return -1;
-	newEl->city = AddTreeElement(CityFile, newEl);
+	AddTreeElement(CityFile, newEl);
 
 	
 	if (!H->hashList[hashKey])
 		H->hashList[hashKey] = newEl;
 	else {
-		L = H->hashList[hashKey];
-		while (L->next != NULL && strcmp(L->next->stateName, State) < 0)
-			L = L->next;
-		InsertAfter(L, newEl);
+		H1 = H->hashList[hashKey];
+		while (H1->next && strcmp(H1->next->stateName, State) < 0)
+			H1 = H1->next;
+		InsertAfter(H1, newEl);
 	}
 	return 0;
 }
-hashP Table(int tabSize)
+
+Position Find(char* stateName, int tabSize)
 {
-	hashP H = NULL;
-	int i = 0;
+	
+	int res = 0;
+	
+	for (int i = 0; i < 5; i++) {
 
-	H = (hashP)malloc(sizeof(hashT));
-
-	if (H == NULL) {
-		perror("Greska inicijalizacije memorije!");
-		return NULL;
+		if (stateName[i] == '\0')
+			break;	
+		res += stateName[i];
 	}
-	H->tabSize = tabSize;
-
-	H->hashList = (List*)malloc(sizeof(List) * H->tabSize);
-	if (H->hashList == NULL)
-	{
-		perror("Greska inicijalizacije memorije");
-		return -1;
-	}
-
-	for (i = 0;i < H->tabSize;i++)
-		H->hashList[i] = NULL;
-	return H;	
-}
-
-
-Position Find(char key, hashP H)
-{
-	ListH temp;
-
-	int index = whichKey(key, H->tabSize);
-	temp = H->hashList[index];
-	while (temp && temp->stateName != key)
-		temp = temp->next;
-
-	return temp;
+	
+	return (res % tabSize);
 }
 
 Position CreateListElement(char* State)
@@ -101,6 +110,28 @@ Position CreateListElement(char* State)
 
 	return newState;
 }
+int AddTreeElement(char* fileName, Position newState)
+{
+	char CityName[MAX_SIZE] = { 0 };
+	int Population = 0;
+	
+	treeP newCity = NULL;
+	treeP root = NULL;
+	FILE* dat = NULL;
+	dat = fopen(fileName, "r");
+	while (!feof(dat))
+	{
+		
+		fscanf(dat, "%s %d", CityName, &Population);
+		newCity = CreateNewEl(CityName, Population);
+		root = Insert(newCity, root);
+	}
+
+	newState->city = root;
+
+	return EXIT_SUCCESS;
+}
+
 int InsertBefore(Position head, Position position, Position newState)
 {
 	Position before = NULL;
@@ -122,25 +153,7 @@ int InsertAfter(Position position, Position newElement)
 	position->next = newElement;
 	return EXIT_SUCCESS;
 }
-int AddTreeElement(char* fileName, Position newState)
-{
-	char CityName[MAX_SIZE] = { 0 };
-	int Population = 0;
-	treeP newCity = NULL;
-	treeP root = NULL;
-	FILE* dat = NULL;
-	dat = fopen(fileName, "r");
-	while (!feof(dat))
-	{
-		fscanf(dat, "%s %d", CityName, &Population);
-		newCity = CreateNewEl(CityName, Population);
-		root = Insert(newCity, root);
-	}
 
-	newState->city = root;
-
-	return EXIT_SUCCESS;
-}
 treeP Insert(treeP newCity, treeP current)
 {
 	if (!current)
@@ -187,21 +200,22 @@ int PrintTree(treeP current)
 	PrintTree(current->right);
 	return 1;
 }
-int Search(char* stateName, int num, Position head)
+int Search(char* stateName, int num, hashP H)
 {
-
-	Position temp = head->next;
-	Position temp1 = NULL;
-	while (temp->next)
-	{
-
-		if (strcmp(temp->stateName, stateName) == 0)
-			break;
-		temp = temp->next;
-		printf("\ntemp: %s", temp->stateName);
+	ListH F = NULL;
+	ListH H1 = NULL;
+	int i = 0;
+	i = Find(stateName, H->tabSize);
+	H1 = H->hashList[i];
+	while (H1 != NULL) {
+		if (strcmp(H1->stateName, stateName) == 0) {
+			ListH F = H1;
+		}
+		H1 = H1->next;
 	}
 
-	treeP current = temp->city;
+
+	treeP current = F->city;
 	printf("\nGradovi sa vise od %d stanovnika:", num);
 	PrintEl(num, current);
 
@@ -222,19 +236,18 @@ int PrintEl(int num, treeP current)
 
 	return EXIT_SUCCESS;
 }
-int PrintAll(hashP H)
+int Print(hashP H)
 {
-	ListH L = NULL;
+	ListH H1 = NULL;
 	for (int i = 0; i < H->tabSize; i++) {
-		L = H->hashList[i];
-		if (L != NULL) {
-			while (L != NULL) {
-				printf("Drzava: %s\n", L->stateName);
-				printf(" Grad:                Broj Stanovnika:\n");
-				PrintTree(L->city);
-				L = L->next;
+		H1 = H->hashList[i];
+		
+			while (H1) {
+				printf("\n%s", H1->stateName);
+				PrintTree(H1->city);
+				H1 = H1->next;
 			}
-		}
+		
 	}
 	return 0;
 }

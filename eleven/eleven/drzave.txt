@@ -1,0 +1,3 @@
+Hrvatska hrv.txt
+Slovenija slo.txt
+Njemaèka njem.txt

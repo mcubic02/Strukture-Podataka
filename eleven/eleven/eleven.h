@@ -29,7 +29,8 @@ typedef struct _hashT
 }hashT;
 
 hashP Table(int tabSize);
-Position Find(char key, hashP H);
+int ReadFile(char* file, hashP H);
+Position Find(char* key, int tabSize);
 Position CreateListElement(char* State);
 int InsertBefore(Position head, Position position, Position newState);
 Position FindBefore(Position head, Position position);
@@ -38,9 +39,9 @@ int AddTreeElement(char* fileName, Position newState);
 treeP Insert(treeP newCity, treeP current);
 treeP CreateNewEl(char* name, int pop);
 int PrintTree(treeP current);
-int Search(char* stateName, int num, Position head);
+int Search(char* stateName, int num, hashP H);
 int PrintEl(int num, treeP current);
-int PrintAll(hashP H);
+int Print(hashP H);
 
 
 
